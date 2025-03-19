@@ -1,0 +1,174 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.75rem;
+  color: #1a202c;
+}
+
+.currentTime {
+  background-color: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.timestamps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.timestamps > div {
+  display: flex;
+  align-items: center;
+}
+
+.timestamps span:first-child {
+  min-width: 120px;
+  color: #4a5568;
+}
+
+.timestamp {
+  font-family: monospace;
+  font-size: 1.1rem;
+  color: #2563eb;
+  cursor: pointer;
+  user-select: all;
+  transition: all 0.2s ease;
+}
+
+.timestamp:hover {
+  background-color: #edf2ff;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+}
+
+.convertSection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  flex: 1;
+  margin-top: 8px;
+}
+
+.convertBox {
+  background-color: white;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #f8fafc;
+}
+
+.button {
+  padding: 8px 20px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-width: 80px;
+}
+
+.button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.navigation {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.result {
+  margin-top: 4px;
+  padding: 12px;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  font-family: monospace;
+  line-height: 1.5;
+  min-height: 60px;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+  
+  .timestamps {
+    grid-template-columns: 1fr;
+  }
+  
+  .convertSection {
+    grid-template-columns: 1fr;
+  }
+  
+  .inputGroup {
+    flex-direction: column;
+  }
+  
+  .button {
+    width: 100%;
+  }
+}
+
+.timestampWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copySuccess {
+  color: #10b981;
+  font-size: 1rem;
+  animation: fadeInOut 2s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: scale(0.8); }
+  20% { opacity: 1; transform: scale(1.2); }
+  40% { transform: scale(1); }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
