@@ -21,6 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(404).json({ error: '未找到要删除的项目' });
             }
         } catch (error) {
+            console.error('删除项目时出错:', error);
             return res.status(500).json({ error: '服务器错误' });
         }
     } else {
