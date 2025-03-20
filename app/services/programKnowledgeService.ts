@@ -31,27 +31,27 @@ export async function getAllCmsModules(): Promise<ProgramKnowledge[]> {
     return Promise.resolve([...mockProgramKnowledge]);
   }
   const client = await clientPromise;
-  const collection = client.db().collection('program_knowledge');
+  const collection = client.db("cms").collection('program_knowledge');
   return collection.find({}).toArray() as Promise<ProgramKnowledge[]>;
 }
 
 export async function createCmsModule(module: Omit<ProgramKnowledge, '_id'>): Promise<ProgramKnowledge> {
   const client = await clientPromise;
-  const collection = client.db().collection('program_knowledge');
+  const collection = client.db("cms").collection('program_knowledge');
   const result = await collection.insertOne(module);
   return { ...module, _id: result.insertedId };
 }
 
 export async function updateCmsModule(name: string, module: Partial<ProgramKnowledge>): Promise<boolean> {
   const client = await clientPromise;
-  const collection = client.db().collection('program_knowledge');
+  const collection = client.db("cms").collection('program_knowledge');
   const result = await collection.updateOne({ name }, { $set: module });
   return result.modifiedCount > 0;
 }
 
 export async function deleteCmsModule(name: string): Promise<boolean> {
   const client = await clientPromise;
-  const collection = client.db().collection('program_knowledge');
+  const collection = client.db("cms").collection('program_knowledge');
   const result = await collection.deleteOne({ name });
   return result.deletedCount > 0;
 }

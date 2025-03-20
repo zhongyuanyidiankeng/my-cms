@@ -10,26 +10,26 @@ const mockTelegramMessages: TelegramMessage[] = [
 
 export async function getAllTelegramMessages(): Promise<TelegramMessage[]> {
   const client = await clientPromise;
-  const collection = client.db().collection('telegram_message');
+  const collection = client.db("cms").collection('telegram_message');
   return collection.find({}).sort({ create_at: -1 }).toArray() as Promise<TelegramMessage[]>;
 }
 
 export async function getTelegramMessageById(id: string): Promise<TelegramMessage | null> {
   const client = await clientPromise;
-  const collection = client.db().collection('telegram_message');
+  const collection = client.db("cms").collection('telegram_message');
   return collection.findOne({ id }) as Promise<TelegramMessage | null>;
 }
 
 export async function updateTelegramMessage(id: string, message: Partial<TelegramMessage>): Promise<boolean> {
   const client = await clientPromise;
-  const collection = client.db().collection('telegram_message');
+  const collection = client.db("cms").collection('telegram_message');
   const result = await collection.updateOne({ id }, { $set: message });
   return result.modifiedCount > 0;
 }
 
 export async function deleteTelegramMessage(id: string): Promise<boolean> {
   const client = await clientPromise;
-  const collection = client.db().collection('telegram_message');
+  const collection = client.db("cms").collection('telegram_message');
   const result = await collection.deleteOne({ id });
   return result.deletedCount > 0;
 }
@@ -39,7 +39,7 @@ export async function getTelegramMessagesByDate(dateStr: string): Promise<Telegr
     return Promise.resolve(mockTelegramMessages.filter(message => message.create_at === dateStr));
   }
   const client = await clientPromise;
-  const collection = client.db().collection('telegram_message');
+  const collection = client.db("cms").collection('telegram_message');
   
   // 由于create_at是yyyy-mm-dd格式的字符串，我们可以直接进行字符串比较
   return collection.find({
