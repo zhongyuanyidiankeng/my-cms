@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getGitHubTrendingRepos } from '../../services/githubService';
 import styles from '../github.module.css';
-import type { GitHubRepo } from '../../services/githubService';
+import type { GitHubRepo } from '../../models/GitHubRepo';
 import BackToHome from '../../components/BackToHome';
 
 export default function GitHubTrending({ initialRepos }: { initialRepos: GitHubRepo[] }) {

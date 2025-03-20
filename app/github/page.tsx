@@ -1,4 +1,4 @@
-import { GitHubRepo } from '../services/githubService';
+import { GitHubRepo } from '../models/GitHubRepo';
 import GitHubTrending from './components/GitHubTrending';
 
 export default async function GitHubPage() {
