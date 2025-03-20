@@ -71,10 +71,10 @@ export async function deleteExample(logic_code: string, exampleIndex: number): P
   const collection = client.db("cms").collection('program_knowledge');
   
   // 先获取当前的示例数组
-  let module = await collection.findOne({ logic_code });
-  if (!module) return false;
+  const knowledge = await collection.findOne({ logic_code });
+  if (!knowledge) return false;
   
-  const examples = module.example || [];
+  const examples = knowledge.example || [];
   if (exampleIndex < 0 || exampleIndex >= examples.length) return false;
   
   // 移除指定索引的示例
