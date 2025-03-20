@@ -6,14 +6,14 @@ import { formatDate } from '../utils/dateUtils';
 import DatePicker from '../components/DatePicker';
 import BackToHome from '../components/BackToHome';
 import { useTelegramDate } from '../contexts/TelegramDateContext';
-import { TelegramMessageBo } from '../models/TelegramMessage';
+import TelegramMessage from '../models/TelegramMessage';
 
 export default function TelegramPage() {
   // 默认使用当天日期
   const today = new Date();
   const formattedToday = formatDate(today);
   
-  const [messages, setMessages] = useState<TelegramMessageBo[]>([]);
+  const [messages, setMessages] = useState<TelegramMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const { selectedDate } = useTelegramDate();
   
@@ -129,9 +129,9 @@ export default function TelegramPage() {
   }>({ visible: false, messageId: null });
   
   // 处理删除消息
-  const handleDeleteMessage = async (messageId: string) => {
+  const handleDeleteMessage = async (logicCode: string) => {
     try {
-      const response = await fetch(`/api/telegram/123456`, {
+      const response = await fetch(`/api/telegram/${logicCode}`, {
         method: 'DELETE',
       });
       
@@ -140,7 +140,7 @@ export default function TelegramPage() {
       }
       
       // 删除成功后更新消息列表
-      setMessages(messages.filter(msg => msg.id !== messageId));
+      setMessages(messages.filter(msg => msg.logic_code !== logicCode));
       setDeleteConfirmation({ visible: false, messageId: null });
     } catch (error) {
       console.error('删除消息失败:', error);
@@ -178,7 +178,7 @@ export default function TelegramPage() {
               <div className={styles.cardActions}>
                 <button 
                   className={styles.menuButton}
-                  onClick={() => showDeleteConfirmation(message.id)}
+                  onClick={() => showDeleteConfirmation(message.logic_code)}
                 >
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                     <circle cx="5" cy="12" r="2" />

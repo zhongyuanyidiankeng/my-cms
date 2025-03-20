@@ -1,14 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 export interface TelegramMessage {
-  _id: ObjectId;
-  text?: string;
-  image?: string[];
-  create_at: string;
-}
-
-export interface TelegramMessageBo {
-  id: string;
+  logic_code: string;
   text?: string;
   image?: string[];
   create_at: string;
