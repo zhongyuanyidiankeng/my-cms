@@ -8,7 +8,7 @@ import BackToHome from '../components/BackToHome';
 import styles from '../styles/Knowledge.module.css';
 
 export default function ProgramKnowledgePage() {
-  const [modules, setModules] = useState<ProgramKnowledge[]>([]);
+  const [knowledges, setKnowledges] = useState<ProgramKnowledge[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isAddTypeModalVisible, setIsAddTypeModalVisible] = useState(false);
@@ -18,17 +18,13 @@ export default function ProgramKnowledgePage() {
   const [newExampleDesc, setNewExampleDesc] = useState('');
   const [newExampleCode, setNewExampleCode] = useState('');
 
-  useEffect(() => {
-    fetchModules();
-  }, []);
-
-  const fetchModules = async () => {
+  async function fetchKnowledges() {
     try {
       setLoading(true);
       const response = await fetch('/api/knowledge');
       if (!response.ok) throw new Error('获取数据失败');
       const data = await response.json();
-      setModules(data);
+      setKnowledges(data);
       if (data.length > 0 && !selectedType) {
         setSelectedType(data[0].logic_code);
       }
@@ -38,7 +34,11 @@ export default function ProgramKnowledgePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    fetchKnowledges();
+  }, []);
 
   const handleAddType = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ export default function ProgramKnowledgePage() {
       setIsAddTypeModalVisible(false);
       setNewTypeLogicCode('');
       setNewTypeName('');
-      await fetchModules();
+      await fetchKnowledges();
       setSelectedType(newTypeLogicCode);
     } catch (error) {
       console.error('添加类型失败:', error);
@@ -95,7 +95,7 @@ export default function ProgramKnowledgePage() {
       setIsAddExampleModalVisible(false);
       setNewExampleDesc('');
       setNewExampleCode('');
-      await fetchModules();
+      await fetchKnowledges();
     } catch (error) {
       console.error('添加示例失败:', error);
       alert('添加示例失败');
@@ -113,14 +113,14 @@ export default function ProgramKnowledgePage() {
       if (!response.ok) throw new Error('删除示例失败');
       
       alert('删除示例成功');
-      await fetchModules();
+      await fetchKnowledges();
     } catch (error) {
       console.error('删除示例失败:', error);
       alert('删除示例失败');
     }
   };
 
-  const selectedModule = modules.find(m => m.logic_code === selectedType);
+  const selectedModule = knowledges.find(m => m.logic_code === selectedType);
 
   return (
     <div className={styles.container}>
@@ -146,17 +146,17 @@ export default function ProgramKnowledgePage() {
           <div className={styles.sidebar}>
             <div className={styles.typeList}>
               <h2 className={styles.sectionTitle}>知识类型</h2>
-              {modules.length === 0 ? (
+              {knowledges.length === 0 ? (
                 <p className={styles.emptyText}>暂无数据</p>
               ) : (
                 <div className={styles.typeButtons}>
-                  {modules.map((module) => (
+                  {knowledges.map((knowledge) => (
                     <button
-                      key={module.logic_code}
-                      className={`${styles.typeButton} ${selectedType === module.logic_code ? styles.activeType : ''}`}
-                      onClick={() => setSelectedType(module.logic_code)}
+                      key={knowledge.logic_code}
+                      className={`${styles.typeButton} ${selectedType === knowledge.logic_code ? styles.activeType : ''}`}
+                      onClick={() => setSelectedType(knowledge.logic_code)}
                     >
-                      {module.type || module.logic_code}
+                      {knowledge.type || knowledge.logic_code}
                     </button>
                   ))}
                 </div>
@@ -195,7 +195,13 @@ export default function ProgramKnowledgePage() {
                           </button>
                         </div>
                         <div className={styles.cardContent}>
-                          <SyntaxHighlighter language="javascript" style={docco}>
+                          <SyntaxHighlighter 
+                            language={selectedModule.logic_code}
+                            style={docco}
+                            wrapLines={true}
+                            showLineNumbers={false}
+                            wrapLongLines={false}
+                          >
                             {example.code}
                           </SyntaxHighlighter>
                         </div>
