@@ -23,7 +23,7 @@ export default function JsonPage() {
       setOutputJson(formatted);
       setError('');
     } catch (err) {
-      setError('JSON 格式错误');
+      setError('JSON 格式错误：' + String(err));
       setOutputJson('');
     }
   };
@@ -41,7 +41,7 @@ export default function JsonPage() {
       setOutputJson(compressed);
       setError('');
     } catch (err) {
-      setError('JSON 格式错误');
+      setError('JSON 格式错误：' + String(err));
       setOutputJson('');
     }
   };

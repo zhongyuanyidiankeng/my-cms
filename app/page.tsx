@@ -14,7 +14,7 @@ export default async function Home() {
       <h1 className={styles.title}>啦啦啦</h1>
       
       <div className={styles.cardContainer}>
-        {modules.map((module, _) => {
+        {modules.map((module) => {
           // 为每个模块设置图标和描述
           const icon = module.config.icon;
           const description = module.config.desc;

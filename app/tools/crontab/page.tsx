@@ -75,7 +75,7 @@ export default function CrontabPage() {
         });
         setDescription(desc);
       } catch (err) {
-        setDescription('？？？');
+        setDescription(String(err));
       }
 
       // 修改这里的解析方式
