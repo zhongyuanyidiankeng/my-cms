@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteTelegramMessage } from '../../../services/telegramMessageService';
 
+// 修复类型定义，使用正确的参数结构
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: { id: string } }
 ) {
     console.log('Request method:', request.method);
-    const id = params.id;
+    const id = context.params.id;
 
     if (!id) {
         return NextResponse.json({ error: '缺少消息ID' }, { status: 400 });
