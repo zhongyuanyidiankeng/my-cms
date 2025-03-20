@@ -6,7 +6,6 @@ export interface GitHubRepo {
     language: string;
     languageColor: string;
     stars: number;
-    forks: number;
 }
 
 export default GitHubRepo;
