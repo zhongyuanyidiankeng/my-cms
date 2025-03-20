@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 
 export interface ProgramKnowledge  {
   _id?: ObjectId;
+  logic_code: string;
   type?: string;
   example: Example[];
 }

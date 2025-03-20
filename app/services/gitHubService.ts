@@ -15,7 +15,6 @@ export async function trendingGitHub(period: string = 'daily', language: string 
 
             $('article').each((index, repo) => {
                 const title = $(repo).find('h2.h3 a').text().replace(/\s/g, '');
-                console.log(title);
                 const owner = title.split('/')[0];
                 const name = title.split('/')[1];
                 const starLink = `/${title.replace(/ /g, '')}/stargazers`;
