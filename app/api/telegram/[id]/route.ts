@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteTelegramMessage } from '../../../services/telegramMessageService';
 
-type Params = Promise<{ id: string }>
-
 // 修复类型定义，使用正确的参数结构
 export async function DELETE(request: NextRequest,
-    context: { params: Params }
+    context: { params: Promise<{ id: string }> }
 ) {
     console.log("request url", request.method);
     const params = await context.params
