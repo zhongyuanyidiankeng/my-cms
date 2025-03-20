@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { deleteTelegramMessage } from '../../../services/telegramMessageService';
 
 // 修复类型定义，使用正确的参数结构
-export async function DELETE(
+export async function DELETE(request: NextRequest,
     { params }: { params: { id: string } }
 ) {
+    console.log("request url", request.method);
     const id = params.id;
 
     if (!id) {

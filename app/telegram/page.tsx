@@ -131,7 +131,9 @@ export default function TelegramPage() {
   // 处理删除消息
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      const response = await fetch(`/api/telegram/${messageId}/delete`);
+      const response = await fetch(`/api/telegram/${messageId}`, {
+        method: 'DELETE',
+      });
       
       if (!response.ok) {
         throw new Error('删除消息失败');
