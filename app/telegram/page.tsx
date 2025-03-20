@@ -131,13 +131,13 @@ export default function TelegramPage() {
   // 处理删除消息
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      const response = await fetch(`/api/telegram/${messageId}`, {
-        method: 'DELETE',
-      });
+      // const response = await fetch(`/api/telegram/${messageId}`, {
+      //   method: 'DELETE',
+      // });
       
-      if (!response.ok) {
-        throw new Error('删除消息失败');
-      }
+      // if (!response.ok) {
+      //   throw new Error('删除消息失败');
+      // }
       
       // 删除成功后更新消息列表
       setMessages(messages.filter(msg => msg._id.toString() !== messageId));
