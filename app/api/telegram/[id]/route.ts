@@ -3,9 +3,9 @@ import { deleteTelegramMessage } from '../../../services/telegramMessageService'
 
 export async function DELETE(
     request: NextRequest,
-  { params }: { params: { id: string } }
+    { params }: { params: { id: string } }
 ) {
-    console.log(request);
+    console.log('Request method:', request.method);
     const id = params.id;
 
     if (!id) {
