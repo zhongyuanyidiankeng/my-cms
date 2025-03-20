@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   try {
     const messages = await getTelegramMessagesByDate(date);
     const result = messages.map((message) => ({
-      id: message._id.toString(),
+      id: message._id.toHexString(),
       text: message.text,
       image: message.image,
       create_at: message.create_at,
