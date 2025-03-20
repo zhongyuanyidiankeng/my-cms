@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb';
-
 export interface TelegramMessage {
   logic_code: string;
   text?: string;

@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import clientPromise,{ USE_MOCK_DATA } from '../lib/mongodb';
 import { TelegramMessage } from '../models/TelegramMessage';
 
