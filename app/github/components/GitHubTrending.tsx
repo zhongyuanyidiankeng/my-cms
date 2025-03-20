@@ -12,22 +12,26 @@ export default function GitHubTrending({ initialRepos }: { initialRepos: GitHubR
   const [language, setLanguage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function fetchRepos(newPeriod: string, newLanguage: string) {
-    setLoading(true);
-    try {
-      const data = await getGitHubTrendingRepos(newPeriod, newLanguage);
-      setRepos(data);
-    } catch (error) {
-      console.error('获取数据失败:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
+    async function fetchRepos(newPeriod: string, newLanguage: string) {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/github?since=${newPeriod}${newLanguage ? `&language=${newLanguage}` : ''}`);
+        if (!response.ok) {
+          throw new Error('加载模块失败');
+        }
+        const data = await response.json();
+        setRepos(data);
+      } catch (error) {
+        console.error('获取数据失败:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchRepos(period, language);
   }, [period, language]);
-
+  
   return (
     <div className={styles.container}>
       <BackToHome />
