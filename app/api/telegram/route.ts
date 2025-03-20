@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const messages = await getTelegramMessagesByDate(date);
-    console.log("telegram:",messages);
     return NextResponse.json(messages);
   } catch (error) {
     console.error('获取Telegram消息失败:', error);

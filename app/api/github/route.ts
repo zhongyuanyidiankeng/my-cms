@@ -6,7 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const language = searchParams.get('language') || '';
     const since = searchParams.get('since') || 'daily'; // daily, weekly, monthly
-    
+    console.log("language:",language);
+    console.log("since:",since);
     // 使用 trending-github 获取趋势数据
     const trendingData = await trendingGithub(
       language || undefined,
