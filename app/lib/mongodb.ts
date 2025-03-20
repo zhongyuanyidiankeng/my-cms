@@ -34,11 +34,9 @@ if (!USE_MOCK_DATA) {
     }
     clientPromise = globalWithMongo._mongoClientPromise;
   } else {
-    console.log('生产环境下连接MongoDB开始');
     // 在生产环境中为每个请求创建新的连接
     client = new MongoClient(uri, options);
     clientPromise = client.connect();
-    console.log('生产环境下连接MongoDB完成');
   }
 } else {
   // 使用mock数据时，创建一个永远不会实际连接的Promise

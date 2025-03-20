@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
       stars: repo.stars,
       forks: repo.forks
     }));
-
+    console.log("github:",result);
     return NextResponse.json(result);
   } catch (error) {
     console.error('获取 GitHub 趋势数据失败:', error);

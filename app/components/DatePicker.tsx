@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './DatePicker.module.css';
+import { useTelegramDate } from '../contexts/TelegramDateContext';
 
 interface DatePickerProps {
   defaultValue: string; // 格式为 yyyy-mm-dd
@@ -10,20 +11,18 @@ interface DatePickerProps {
 
 export default function DatePicker({ defaultValue }: DatePickerProps) {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
-  const router = useRouter();
+  const telegramContext = useTelegramDate();
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
     
-    // 使用客户端导航更新页面内容
-    // 这里我们不在URL中添加参数，而是通过状态管理或Context API来传递日期
-    // 为了简单起见，我们可以使用一个自定义事件
+    // 更新Context中的日期
+    telegramContext.setSelectedDate(new Date(newDate));
+    
+    // 仍然保留事件触发，以兼容其他可能使用此事件的组件
     const event = new CustomEvent('dateSelected', { detail: newDate });
     window.dispatchEvent(event);
-    
-    // 重新加载页面以获取新日期的数据
-    router.refresh();
   };
 
   return (
