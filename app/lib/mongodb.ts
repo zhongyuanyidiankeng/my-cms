@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 
 // 从环境变量获取mock数据控制标志
 export const USE_MOCK_DATA = process.env.USE_MOCK_DATA === 'true';
@@ -9,7 +9,13 @@ if (!USE_MOCK_DATA && !process.env.MONGODB_URI) {
 }
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/my-cms';
-const options = {};
+const options = {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+};
 
 let client;
 let clientPromise: Promise<MongoClient>;
