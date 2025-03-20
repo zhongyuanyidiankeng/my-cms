@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import styles from './timestamp.module.css';
 import BackToHome from '../../components/BackToHome';
 import BackToTools from '../../components/BackToTools';
-import { log } from 'console';
 
 export default function TimestampPage() {
   const [currentTimestamp, setCurrentTimestamp] = useState({
@@ -72,7 +71,7 @@ export default function TimestampPage() {
 
       setDateResult(formatDate(date));
     } catch (error) {
-      log(error);
+      console.error('转换日期时发生错误:', error);
       setDateResult('转换失败');
     }
   };
@@ -97,7 +96,7 @@ export default function TimestampPage() {
         milliseconds: date.getTime().toString()
       });
     } catch (error) {
-      log(error);
+      console.error('转换时间戳时发生错误:', error);
       setTimestampResult({
         seconds: '转换失败',
         milliseconds: '转换失败'
