@@ -3,11 +3,11 @@ import { deleteExample } from '../../../../../services/programKnowledgeService';
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { logic_code: string, index: string } }
+  context: { params: Promise<{ logic_code: string, index: string }> }
 ) {
   try {
     console.log("request method", request.method);
-    const { logic_code, index } = params;
+    const { logic_code, index } = await context.params;
     const exampleIndex = parseInt(index, 10);
     
     if (isNaN(exampleIndex)) {

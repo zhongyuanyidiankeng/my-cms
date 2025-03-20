@@ -4,10 +4,10 @@ import { Example } from '../../../../models/ProgramKnowledge';
 
 export async function POST(
   request: Request,
-  { params }: { params: { logic_code: string } }
+  context: {params: Promise<{ logic_code: string}>}
 ) {
   try {
-    const { logic_code } = params;
+    const { logic_code } = await context.params;
     const data = await request.json() as Example;
     
     if (!data.desc || !data.code) {

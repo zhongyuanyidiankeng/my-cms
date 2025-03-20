@@ -38,7 +38,7 @@ export default function ProgramKnowledgePage() {
 
   useEffect(() => {
     fetchKnowledges();
-  }, []);
+  }, [fetchKnowledges]);
 
   const handleAddType = async (e: React.FormEvent) => {
     e.preventDefault();
