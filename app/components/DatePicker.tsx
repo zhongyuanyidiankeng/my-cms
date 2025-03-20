@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import styles from './DatePicker.module.css';
 import { useTelegramDate } from '../contexts/TelegramDateContext';
 
