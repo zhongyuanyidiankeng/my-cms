@@ -1,6 +1,5 @@
 import clientPromise, {USE_MOCK_DATA} from '../lib/mongodb';
 import { CmsModule } from '../models/CmsModule';
-import { ObjectId } from 'mongodb';
 
 const mockCmsModules: CmsModule[] = [
   { name: "Telegram", config:{icon: "/icons/telegram.svg", desc: "多媒体内容展示与分析"}, route: "/telegram"  },

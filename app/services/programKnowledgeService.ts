@@ -27,7 +27,7 @@ const mockProgramKnowledge: ProgramKnowledge[] = [
 ];
 
 export async function getAllCmsModules(): Promise<ProgramKnowledge[]> {
-  if (true) {
+  if (USE_MOCK_DATA) {
     return Promise.resolve([...mockProgramKnowledge]);
   }
   const client = await clientPromise;

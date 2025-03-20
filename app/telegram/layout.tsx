@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { TelegramDateContext } from '../contexts/TelegramDateContext';
-import Link from 'next/link';
-import styles from './telegram.module.css';
 
 export default function TelegramLayout({
   children,

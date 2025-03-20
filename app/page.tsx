@@ -14,10 +14,10 @@ export default async function Home() {
       <h1 className={styles.title}>啦啦啦</h1>
       
       <div className={styles.cardContainer}>
-        {modules.map((module, index) => {
+        {modules.map((module, _) => {
           // 为每个模块设置图标和描述
-          let icon = module.config.icon;
-          let description = module.config.desc;
+          const icon = module.config.icon;
+          const description = module.config.desc;
           
           return (
             <Link 

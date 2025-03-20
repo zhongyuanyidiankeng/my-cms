@@ -7,6 +7,15 @@ import cronstrue from 'cronstrue/i18n';
 import { CronExpressionParser } from 'cron-parser';
 import BackToHome from '../../components/BackToHome';
 
+interface CronParserOptions {
+  currentDate?: Date | string; // 起始时间
+  endDate?: Date | string;    // 结束时间
+  iterator?: boolean;         // 是否返回迭代器
+  utc?: boolean;              // 是否使用 UTC 时间
+  tz?: string;                // 时区
+  seconds: boolean;
+}
+
 export default function CrontabPage() {
   const [cronType, setCronType] = useState('linux');
   const [cronExpression, setCronExpression] = useState('');
@@ -29,13 +38,14 @@ export default function CrontabPage() {
     }
 
     try {
-      let expression = cronExpression;
+      const expression = cronExpression;
       
       // 配置解析选项
-      const options: any = {
+      const options: CronParserOptions = {
         currentDate: new Date(),
         tz: 'Asia/Shanghai',
-        iterator: true
+        iterator: true,
+        seconds: false
       };
       
       // 根据不同类型处理表达式
