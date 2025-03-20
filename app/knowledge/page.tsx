@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ProgramKnowledge, Example } from '../models/ProgramKnowledge';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
@@ -18,7 +18,7 @@ export default function ProgramKnowledgePage() {
   const [newExampleDesc, setNewExampleDesc] = useState('');
   const [newExampleCode, setNewExampleCode] = useState('');
 
-  async function fetchKnowledges() {
+  const fetchKnowledges = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/knowledge');
@@ -34,7 +34,7 @@ export default function ProgramKnowledgePage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedType]); // 添加 selectedType 作为依赖项
 
   useEffect(() => {
     fetchKnowledges();
