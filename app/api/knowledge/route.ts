@@ -5,6 +5,7 @@ import { ProgramKnowledge } from '../../models/ProgramKnowledge';
 export async function GET() {
   try {
     const modules = await getAllProgramKnowledges();
+    console.log(modules);
     return NextResponse.json(modules);
   } catch (error) {
     console.error('获取知识模块失败:', error);
