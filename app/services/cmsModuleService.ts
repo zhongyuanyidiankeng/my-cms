@@ -12,8 +12,10 @@ export async function getAllCmsModules(): Promise<CmsModule[]> {
   if (USE_MOCK_DATA) {
     return Promise.resolve([...mockCmsModules]);
   }
+  console.log('begin getAllCmsModules');
   const client = await clientPromise;
   const collection = client.db().collection('cms_module');
+  console.log('end getAllCmsModules');
   return collection.find({}).toArray() as Promise<CmsModule[]>;
 }
 
