@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const since = searchParams.get('since') || 'daily'; // daily, weekly, monthly
     // 使用 trending-github 获取趋势数据
     const trendingData = await trending(since, language);
-    
+    console.log("github:",trendingData);
     const result = trendingData.map(repo => ({
       owner: repo.author || '',
       name: repo.name || '',
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       stars: repo.stars,
       forks: repo.forks
     }));
-    console.log("github:",result);
+    
     return NextResponse.json(result);
   } catch (error) {
     console.error('获取 GitHub 趋势数据失败:', error);
