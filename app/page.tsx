@@ -3,7 +3,7 @@ import styles from './page.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 // 导入工具列表
-import { tools } from './tools/page';
+import { tools } from './tools/toolsData';
 import ToolIconsClient from './components/ToolIconsClient';
 
 export default async function Home() {
