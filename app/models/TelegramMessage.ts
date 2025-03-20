@@ -7,4 +7,11 @@ export interface TelegramMessage {
   create_at: string;
 }
 
+export interface TelegramMessageBo {
+  id: string;
+  text?: string;
+  image?: string[];
+  create_at: string;
+}
+
 export default TelegramMessage;

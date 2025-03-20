@@ -11,7 +11,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const messages = await getTelegramMessagesByDate(date);
-    return NextResponse.json(messages);
+    const result = messages.map((message) => ({
+      id: message._id.toString(),
+      text: message.text,
+      image: message.image,
+      create_at: message.create_at,
+    }));
+    return NextResponse.json(result);
   } catch (error) {
     console.error('获取Telegram消息失败:', error);
     return NextResponse.json(

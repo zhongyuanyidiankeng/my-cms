@@ -6,14 +6,14 @@ import { formatDate } from '../utils/dateUtils';
 import DatePicker from '../components/DatePicker';
 import BackToHome from '../components/BackToHome';
 import { useTelegramDate } from '../contexts/TelegramDateContext';
-import TelegramMessage from '../models/TelegramMessage';
+import { TelegramMessageBo } from '../models/TelegramMessage';
 
 export default function TelegramPage() {
   // 默认使用当天日期
   const today = new Date();
   const formattedToday = formatDate(today);
   
-  const [messages, setMessages] = useState<TelegramMessage[]>([]);
+  const [messages, setMessages] = useState<TelegramMessageBo[]>([]);
   const [loading, setLoading] = useState(true);
   const { selectedDate } = useTelegramDate();
   
@@ -131,16 +131,16 @@ export default function TelegramPage() {
   // 处理删除消息
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      // const response = await fetch(`/api/telegram/${messageId}`, {
-      //   method: 'DELETE',
-      // });
+      const response = await fetch(`/api/telegram/${messageId}`, {
+        method: 'DELETE',
+      });
       
-      // if (!response.ok) {
-      //   throw new Error('删除消息失败');
-      // }
+      if (!response.ok) {
+        throw new Error('删除消息失败');
+      }
       
       // 删除成功后更新消息列表
-      setMessages(messages.filter(msg => msg._id.toString() !== messageId));
+      setMessages(messages.filter(msg => msg.id !== messageId));
       setDeleteConfirmation({ visible: false, messageId: null });
     } catch (error) {
       console.error('删除消息失败:', error);
@@ -178,7 +178,7 @@ export default function TelegramPage() {
               <div className={styles.cardActions}>
                 <button 
                   className={styles.menuButton}
-                  onClick={() => showDeleteConfirmation(message._id.toString())}
+                  onClick={() => showDeleteConfirmation(message.id)}
                 >
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
                     <circle cx="5" cy="12" r="2" />
