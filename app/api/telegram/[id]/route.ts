@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteTelegramMessage } from '../../../services/telegramMessageService';
 
-export async function deleteById(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
     console.log('request method:', req.method);
     const params = await context.params;
     const id = params.id;
