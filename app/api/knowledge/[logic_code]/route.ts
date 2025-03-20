@@ -3,11 +3,11 @@ import { deleteProgramKnowledge } from '../../../services/programKnowledgeServic
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { logic_code: string } }
+  context: {params: Promise<{ logic_code: string}>}
 ) {
   try {
     console.log("request method", request.method);
-    const { logic_code } = params;
+    const { logic_code } = await context.params;
     const success = await deleteProgramKnowledge(logic_code);
     
     if (success) {
