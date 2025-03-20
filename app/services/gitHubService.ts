@@ -21,15 +21,6 @@ export async function trendingGitHub(period: string = 'daily', language: string 
                 const starLink = `/${title.replace(/ /g, '')}/stargazers`;
                 const language = $(repo).find('[itemprop=programmingLanguage]').text().trim();
 
-                let text = '';
-                if (period === 'daily') {
-                    text = 'stars today';
-                } else if (period === 'weekly') {
-                    text = 'stars this week';
-                } else {
-                    text = 'stars this month';
-                }
-
                 const indexRepo: GitHubRepo = {
                     owner,
                     name,
