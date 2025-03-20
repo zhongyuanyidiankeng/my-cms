@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { deleteTelegramMessage } from '../../../services/telegramMessageService';
 import { NextApiRequest, NextApiResponse } from 'next';
 
