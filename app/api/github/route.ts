@@ -6,10 +6,8 @@ export async function GET(request: NextRequest) {
   try {
     const language = searchParams.get('language') || '';
     const since = searchParams.get('since') || 'daily'; // daily, weekly, monthly
-    console.log("language:",language);
-    console.log("since:",since);
     // 使用 trending-github 获取趋势数据
-    const trendingData = await trending(language, since);
+    const trendingData = await trending(since, language);
     
     const result = trendingData.map(repo => ({
       owner: repo.author || '',
