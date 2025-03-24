@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const filename = searchParams.get('filename') || "";
 
     const filePath = path.join(process.cwd(), 'uploads', filename);
+    console.log("文件路径：", filePath);
     // 检查文件是否存在
     if (!fs.existsSync(filePath)) {
         return NextResponse.json(
