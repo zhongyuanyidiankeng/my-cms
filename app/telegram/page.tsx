@@ -58,9 +58,8 @@ export default function TelegramPage() {
   const renderImages = (images: string[]) => {
     // 提取所有有效的图片URL
     const validImages = images
-      .map(img => {
-        const urlMatch = img.match(/url\("(.+?)"\)/);
-        return urlMatch ? urlMatch[1] : null;
+      .map(url => {
+        return url ? url : null;
       })
       .filter(url => url !== null) as string[];
     
@@ -188,7 +187,7 @@ export default function TelegramPage() {
                 </button>
               </div>
               
-              {message.image && renderImages(message.image)}
+              {message.urls && renderImages(message.urls)}
               
               {message.text && (
                 <div 

@@ -58,6 +58,7 @@ export async function getTelegramMessagesByDate(dateStr: string): Promise<Telegr
       logic_code: doc.logic_code as string,
       text: doc.text as string,
       image: doc.image as string[],
+      urls: doc.urls as string[],
       create_at: doc.create_at as string
     }));
   });
