@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
+export async function GET(request: NextRequest, context: {params: Promise<{ filename: string}>}) {
   try {
-    const filename = searchParams.get('filename') || "";
-
+    const filename = (await context.params).filename;
+    console.log("文件名：", filename);
     const filePath = path.join(process.cwd(), 'uploads', filename);
     console.log("文件路径：", filePath);
     // 检查文件是否存在
