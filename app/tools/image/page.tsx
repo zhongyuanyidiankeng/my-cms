@@ -5,6 +5,7 @@ import styles from './image.module.css';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import BackToHome from '../../components/BackToHome';
+import BackToTools from '../../components/BackToTools';
 
 // 定义处理模式类型
 type ProcessMode = 'grid' | 'compress' | 'gridAndCompress' | null;
@@ -293,200 +294,218 @@ const ImageProcessingTool = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <BackToHome />
+        <div className={styles.navButtons}>
+          <BackToHome />
+          <BackToTools />
+        </div>
         <h1 className={styles.title}>图片处理工具</h1>
       </div>
       
-      <div className={styles.modeSelector}>
-        <button 
-          className={`${styles.modeButton} ${processMode === 'grid' ? styles.activeMode : ''}`}
-          onClick={() => setProcessMode('grid')}
-        >
-          九宫格切图
-        </button>
-        <button 
-          className={`${styles.modeButton} ${processMode === 'compress' ? styles.activeMode : ''}`}
-          onClick={() => setProcessMode('compress')}
-        >
-          图片压缩
-        </button>
-        <button 
-          className={`${styles.modeButton} ${processMode === 'gridAndCompress' ? styles.activeMode : ''}`}
-          onClick={() => setProcessMode('gridAndCompress')}
-        >
-          切图并压缩
-        </button>
-      </div>
-      
-      <div className={styles.uploadContainer}>
-        <input 
-          type="file" 
-          accept="image/*" 
-          onChange={handleImageUpload} 
-          className={styles.fileInput}
-          id="image-upload"
-        />
-        <label htmlFor="image-upload" className={styles.uploadButton}>
-          选择图片
-        </label>
-      </div>
-      
-      {image && (
-        <>
-          <div 
-            className={styles.imageContainer} 
-            ref={containerRef}
-            onMouseMove={isDragging ? handleMouseMove : undefined}
-            onMouseUp={isDragging ? handleMouseUp : undefined}
-          >
-            <img 
-              src={image} 
-              alt="待处理图片" 
-              className={styles.image}
-              ref={imageRef}
-            />
-            
-            {/* 仅在九宫格模式下显示切割线 */}
-            {(processMode === 'grid' || processMode === 'gridAndCompress') && (
-              <>
-                {/* 水平切割线 */}
-                {horizontalLines.map((line, index) => (
-                  <div 
-                    key={`h-${index}`}
-                    className={styles.horizontalLine}
-                    style={{ top: `${line}%` }}
-                    onMouseDown={handleMouseDown(index, 'horizontal')}
-                  />
-                ))}
-                
-                {/* 垂直切割线 */}
-                {verticalLines.map((line, index) => (
-                  <div 
-                    key={`v-${index}`}
-                    className={styles.verticalLine}
-                    style={{ left: `${line}%` }}
-                    onMouseDown={handleMouseDown(index, 'vertical')}
-                  />
-                ))}
-                
-                {/* 显示九宫格编号 */}
-                <div className={styles.gridNumbers}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num, index) => {
-                    const row = Math.floor(index / 3);
-                    const col = index % 3;
-                    
-                    const top = row === 0 ? 0 : horizontalLines[row - 1];
-                    const left = col === 0 ? 0 : verticalLines[col - 1];
-                    const bottom = row === 2 ? 100 : horizontalLines[row];
-                    const right = col === 2 ? 100 : verticalLines[col];
-                    
-                    return (
-                      <div 
-                        key={num}
-                        className={styles.gridNumber}
-                        style={{
-                          top: `${top}%`,
-                          left: `${left}%`,
-                          width: `${right - left}%`,
-                          height: `${bottom - top}%`
-                        }}
-                      >
-                        {num}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
+      <div className={styles.mainContent}>
+        {/* 左侧功能切换按钮 */}
+        <div className={styles.leftPanel}>
+          <div className={styles.modeSelector}>
+            <button 
+              className={`${styles.modeButton} ${processMode === 'grid' ? styles.activeMode : ''}`}
+              onClick={() => setProcessMode('grid')}
+            >
+              九宫格切图
+            </button>
+            <button 
+              className={`${styles.modeButton} ${processMode === 'compress' ? styles.activeMode : ''}`}
+              onClick={() => setProcessMode('compress')}
+            >
+              图片压缩
+            </button>
+            <button 
+              className={`${styles.modeButton} ${processMode === 'gridAndCompress' ? styles.activeMode : ''}`}
+              onClick={() => setProcessMode('gridAndCompress')}
+            >
+              切图并压缩
+            </button>
           </div>
           
-          {/* 压缩设置 */}
-          {(processMode === 'compress' || processMode === 'gridAndCompress') && (
-            <div className={styles.compressionSettings}>
-              <h3>压缩设置</h3>
-              {processMode === 'compress' ? (
+          <div className={styles.uploadContainer}>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              className={styles.fileInput}
+              id="image-upload"
+            />
+            <label htmlFor="image-upload" className={styles.uploadButton}>
+              选择图片
+            </label>
+          </div>
+        </div>
+        
+        {/* 中间图片预览区域 */}
+        <div className={styles.centerPanel}>
+          {image ? (
+            <div 
+              className={styles.imageContainer} 
+              ref={containerRef}
+              onMouseMove={isDragging ? handleMouseMove : undefined}
+              onMouseUp={isDragging ? handleMouseUp : undefined}
+            >
+              <img 
+                src={image} 
+                alt="待处理图片" 
+                className={styles.image}
+                ref={imageRef}
+              />
+              
+              {/* 仅在九宫格模式下显示切割线 */}
+              {(processMode === 'grid' || processMode === 'gridAndCompress') && (
                 <>
-                  <div className={styles.settingGroup}>
-                    <label htmlFor="max-width">最大宽度 (像素)</label>
-                    <input 
-                      type="number" 
-                      id="max-width"
-                      value={maxWidth}
-                      onChange={(e) => setMaxWidth(Number(e.target.value))}
-                      min="1"
-                      className={styles.numberInput}
+                  {/* 水平切割线 */}
+                  {horizontalLines.map((line, index) => (
+                    <div 
+                      key={`h-${index}`}
+                      className={styles.horizontalLine}
+                      style={{ top: `${line}%` }}
+                      onMouseDown={handleMouseDown(index, 'horizontal')}
                     />
-                  </div>
-                  <div className={styles.settingGroup}>
-                    <label htmlFor="max-height">最大高度 (像素)</label>
-                    <input 
-                      type="number" 
-                      id="max-height"
-                      value={maxHeight}
-                      onChange={(e) => setMaxHeight(Number(e.target.value))}
-                      min="1"
-                      className={styles.numberInput}
+                  ))}
+                  
+                  {/* 垂直切割线 */}
+                  {verticalLines.map((line, index) => (
+                    <div 
+                      key={`v-${index}`}
+                      className={styles.verticalLine}
+                      style={{ left: `${line}%` }}
+                      onMouseDown={handleMouseDown(index, 'vertical')}
                     />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={styles.settingGroup}>
-                    <label htmlFor="max-width">输出宽度 (像素)</label>
-                    <input 
-                      type="number" 
-                      id="max-width"
-                      value={maxWidth}
-                      onChange={(e) => setMaxWidth(Number(e.target.value))}
-                      min="1"
-                      className={styles.numberInput}
-                    />
-                  </div>
-                  <div className={styles.settingGroup}>
-                    <label htmlFor="max-height">输出高度 (像素)</label>
-                    <input 
-                      type="number" 
-                      id="max-height"
-                      value={maxHeight}
-                      onChange={(e) => setMaxHeight(Number(e.target.value))}
-                      min="1"
-                      className={styles.numberInput}
-                    />
+                  ))}
+                  
+                  {/* 显示九宫格编号 */}
+                  <div className={styles.gridNumbers}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num, index) => {
+                      const row = Math.floor(index / 3);
+                      const col = index % 3;
+                      
+                      const top = row === 0 ? 0 : horizontalLines[row - 1];
+                      const left = col === 0 ? 0 : verticalLines[col - 1];
+                      const bottom = row === 2 ? 100 : horizontalLines[row];
+                      const right = col === 2 ? 100 : verticalLines[col];
+                      
+                      return (
+                        <div 
+                          key={num}
+                          className={styles.gridNumber}
+                          style={{
+                            top: `${top}%`,
+                            left: `${left}%`,
+                            width: `${right - left}%`,
+                            height: `${bottom - top}%`
+                          }}
+                        >
+                          {num}
+                        </div>
+                      );
+                    })}
                   </div>
                 </>
               )}
-              <div className={styles.settingGroup}>
-                <label htmlFor="quality">质量 ({quality}%)</label>
-                <input 
-                  type="range" 
-                  id="quality"
-                  value={quality}
-                  onChange={(e) => setQuality(Number(e.target.value))}
-                  min="1"
-                  max="100"
-                  className={styles.rangeInput}
-                />
+            </div>
+          ) : (
+            <div className={styles.noImagePlaceholder}>
+              请选择一张图片进行处理
+            </div>
+          )}
+        </div>
+        
+        {/* 右侧设置和下载按钮 */}
+        <div className={styles.rightPanel}>
+          {processMode && image && (
+            <>
+              {/* 压缩设置 */}
+              {(processMode === 'compress' || processMode === 'gridAndCompress') && (
+                <div className={styles.compressionSettings}>
+                  <h3>压缩设置</h3>
+                  {processMode === 'compress' ? (
+                    <>
+                      <div className={styles.settingGroup}>
+                        <label htmlFor="max-width">最大宽度 (像素)</label>
+                        <input 
+                          type="number" 
+                          id="max-width"
+                          value={maxWidth}
+                          onChange={(e) => setMaxWidth(Number(e.target.value))}
+                          min="1"
+                          className={styles.numberInput}
+                        />
+                      </div>
+                      <div className={styles.settingGroup}>
+                        <label htmlFor="max-height">最大高度 (像素)</label>
+                        <input 
+                          type="number" 
+                          id="max-height"
+                          value={maxHeight}
+                          onChange={(e) => setMaxHeight(Number(e.target.value))}
+                          min="1"
+                          className={styles.numberInput}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className={styles.settingGroup}>
+                        <label htmlFor="max-width">输出宽度 (像素)</label>
+                        <input 
+                          type="number" 
+                          id="max-width"
+                          value={maxWidth}
+                          onChange={(e) => setMaxWidth(Number(e.target.value))}
+                          min="1"
+                          className={styles.numberInput}
+                        />
+                      </div>
+                      <div className={styles.settingGroup}>
+                        <label htmlFor="max-height">输出高度 (像素)</label>
+                        <input 
+                          type="number" 
+                          id="max-height"
+                          value={maxHeight}
+                          onChange={(e) => setMaxHeight(Number(e.target.value))}
+                          min="1"
+                          className={styles.numberInput}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <div className={styles.settingGroup}>
+                    <label htmlFor="quality">质量 ({quality}%)</label>
+                    <input 
+                      type="range" 
+                      id="quality"
+                      value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))}
+                      min="1"
+                      max="100"
+                      className={styles.rangeInput}
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div className={styles.controls}>
+                <button 
+                  className={styles.processButton}
+                  onClick={handleProcessButtonClick}
+                >
+                  {processMode === 'grid' && '下载九宫格图片'}
+                  {processMode === 'compress' && '下载压缩图片'}
+                  {processMode === 'gridAndCompress' && '下载切图并压缩'}
+                </button>
               </div>
-            </div>
+            </>
           )}
-          
-          {processMode && (
-            <div className={styles.controls}>
-              <button 
-                className={styles.processButton}
-                onClick={handleProcessButtonClick}
-              >
-                {processMode === 'grid' && '下载九宫格图片'}
-                {processMode === 'compress' && '下载压缩图片'}
-                {processMode === 'gridAndCompress' && '下载切图并压缩'}
-              </button>
-            </div>
-          )}
-          
-          {/* 隐藏的画布用于处理图片 */}
-          <canvas ref={canvasRef} style={{ display: 'none' }} />
-        </>
-      )}
+        </div>
+      </div>
+      
+      {/* 隐藏的画布用于处理图片 */}
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
 };

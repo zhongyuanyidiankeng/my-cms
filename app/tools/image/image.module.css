@@ -1,34 +1,79 @@
 .container {
   padding: 20px;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 20px;
 }
 
+.navButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.backButton {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
+
 .title {
-  margin-left: 20px;
   font-size: 24px;
+  margin: 0;
+}
+
+.mainContent {
+  display: flex;
+  gap: 20px;
+  min-height: 500px;
+}
+
+.leftPanel {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.centerPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightPanel {
+  width: 250px;
+  flex-shrink: 0;
 }
 
 .modeSelector {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
 }
 
 .modeButton {
-  padding: 10px 20px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #f9f9f9;
   cursor: pointer;
   transition: all 0.3s;
+  text-align: left;
 }
 
 .modeButton:hover {
@@ -42,9 +87,7 @@
 }
 
 .uploadContainer {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .fileInput {
@@ -52,12 +95,15 @@
 }
 
 .uploadButton {
+  display: block;
+  width: 100%;
   background-color: #1a73e8;
   color: white;
-  padding: 10px 20px;
+  padding: 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
+  text-align: center;
 }
 
 .uploadButton:hover {
@@ -67,7 +113,6 @@
 .imageContainer {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
   border: 1px solid #ddd;
   overflow: hidden;
 }
@@ -76,6 +121,19 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+.noImagePlaceholder {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  color: #888;
+  font-size: 18px;
 }
 
 .horizontalLine {
@@ -151,15 +209,15 @@
 .controls {
   display: flex;
   justify-content: center;
-  gap: 10px;
   margin-top: 20px;
 }
 
 .processButton {
+  width: 100%;
   background-color: #1a73e8;
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 12px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -170,12 +228,22 @@
   background-color: #1558b3;
 }
 
-@media (max-width: 768px) {
-  .modeSelector {
+@media (max-width: 900px) {
+  .mainContent {
     flex-direction: column;
   }
   
-  .compressionSettings {
-    padding: 12px;
+  .leftPanel, .rightPanel {
+    width: 100%;
+  }
+  
+  .modeSelector {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .modeButton {
+    flex: 1;
+    min-width: 120px;
   }
 }
