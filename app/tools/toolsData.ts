@@ -19,5 +19,12 @@ export const tools = [
     description: '查看 Crontab 表达式的执行时间',
     icon: '⏰',
     path: '/tools/crontab'
+  },
+  {
+    id: 'image',
+    title: 'Image 工具箱',
+    description: '九宫格&图片压缩',
+    icon: '🖼️',
+    path: '/tools/image'
   }
 ];

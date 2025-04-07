@@ -1,0 +1,181 @@
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-left: 20px;
+  font-size: 24px;
+}
+
+.modeSelector {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.modeButton {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modeButton:hover {
+  background-color: #f0f0f0;
+}
+
+.activeMode {
+  background-color: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+}
+
+.uploadContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  background-color: #1a73e8;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.uploadButton:hover {
+  background-color: #1558b3;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.horizontalLine {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(255, 0, 0, 0.7);
+  cursor: ns-resize;
+  z-index: 10;
+}
+
+.verticalLine {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: rgba(255, 0, 0, 0.7);
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+.gridNumbers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.gridNumber {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+}
+
+.compressionSettings {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.settingGroup {
+  margin-bottom: 12px;
+}
+
+.settingGroup label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.numberInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.rangeInput {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.processButton {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+.processButton:hover {
+  background-color: #1558b3;
+}
+
+@media (max-width: 768px) {
+  .modeSelector {
+    flex-direction: column;
+  }
+  
+  .compressionSettings {
+    padding: 12px;
+  }
+}
