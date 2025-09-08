@@ -24,7 +24,7 @@ export default function ToolIconsClient({ tools }: ToolIconsClientProps) {
 
   return (
     <div className={styles.toolIcons}>
-      {tools.slice(0, 3).map(tool => (
+      {tools.slice(0, 4).map(tool => (
         <div
           key={tool.id}
           className={styles.toolIconLink}

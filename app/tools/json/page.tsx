@@ -4,6 +4,7 @@ import { useState } from 'react';
 import styles from './json.module.css';
 import BackToTools from '../../components/BackToTools';
 import BackToHome from '../../components/BackToHome';
+import yaml from 'js-yaml';
 
 export default function JsonPage() {
   const [inputJson, setInputJson] = useState('');
@@ -46,6 +47,42 @@ export default function JsonPage() {
     }
   };
 
+  const handleJsonToYaml = () => {
+    try {
+      if (!inputJson.trim()) {
+        setOutputJson('');
+        setError('');
+        return;
+      }
+      
+      const parsed = JSON.parse(inputJson);
+      const yamlString = yaml.dump(parsed);
+      setOutputJson(yamlString);
+      setError('');
+    } catch (err) {
+      setError('JSON 格式错误：' + String(err));
+      setOutputJson('');
+    }
+  };
+
+  const handleYamlToJson = () => {
+    try {
+      if (!inputJson.trim()) {
+        setOutputJson('');
+        setError('');
+        return;
+      }
+      
+      const parsed = yaml.load(inputJson);
+      const jsonString = JSON.stringify(parsed, null, 2);
+      setOutputJson(jsonString);
+      setError('');
+    } catch (err) {
+      setError('YAML 格式错误：' + String(err));
+      setOutputJson('');
+    }
+  };
+
   const handleClear = () => {
     setInputJson('');
     setOutputJson('');
@@ -60,7 +97,7 @@ export default function JsonPage() {
       </div>
       
       <header className={styles.header}>
-        <h1>JSON 格式化</h1>
+        <h1>JSON/YAML 格式化</h1>
       </header>
 
       <div className={styles.content}>
@@ -68,15 +105,17 @@ export default function JsonPage() {
           <textarea
             value={inputJson}
             onChange={(e) => setInputJson(e.target.value)}
-            placeholder="请输入需要格式化的 JSON"
+            placeholder="请输入需要格式化的 JSON 或 YAML"
             className={styles.textarea}
           />
           {error && <div className={styles.error}>{error}</div>}
         </div>
 
         <div className={styles.actions}>
-          <button onClick={handleFormat} className={styles.button}>格式化</button>
-          <button onClick={handleCompress} className={styles.button}>压缩</button>
+          <button onClick={handleFormat} className={styles.button}>格式化 JSON</button>
+          <button onClick={handleCompress} className={styles.button}>压缩 JSON</button>
+          <button onClick={handleJsonToYaml} className={styles.button}>JSON 转 YAML</button>
+          <button onClick={handleYamlToJson} className={styles.button}>YAML 转 JSON</button>
           <button onClick={handleClear} className={styles.buttonSecondary}>清空</button>
         </div>
 
