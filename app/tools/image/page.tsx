@@ -9,11 +9,13 @@ import BackToTools from '../../components/BackToTools';
 
 // 定义处理模式类型
 type ProcessMode = 'grid' | 'compress' | 'gridAndCompress' | null;
+// 增加 icon 模式
+type IconProcessMode = ProcessMode | 'icon';
 
 const ImageProcessingTool = () => {
   // 通用状态
   const [image, setImage] = useState<string | null>(null);
-  const [processMode, setProcessMode] = useState<ProcessMode>(null);
+  const [processMode, setProcessMode] = useState<IconProcessMode>(null);
   
   // 网格相关状态（支持自定义行列，不局限于九宫格）
   const [rows, setRows] = useState<number>(3);
@@ -33,6 +35,10 @@ const ImageProcessingTool = () => {
   const [maxWidth, setMaxWidth] = useState<number>(800);
   const [maxHeight, setMaxHeight] = useState<number>(800);
   const [quality, setQuality] = useState<number>(80);
+  // 图标输出设置
+  const [iconSize, setIconSize] = useState<number>(128);
+  const [iconFormat, setIconFormat] = useState<'png' | 'jpeg' | 'webp'>('png');
+  const [iconQuality, setIconQuality] = useState<number>(90);
   
   // 引用
   const containerRef = useRef<HTMLDivElement>(null);
@@ -276,6 +282,64 @@ const ImageProcessingTool = () => {
     saveAs(zipBlob, `grid_${rows}x${cols}_${maxWidth}x${maxHeight}.zip`);
   };
 
+  // 下载按指定大小压缩为图标（square）
+  const downloadIconImage = async () => {
+    if (!image || !imageRef.current) return;
+
+    const img = imageRef.current;
+
+    // 目标 canvas
+    const size = Math.max(1, Math.floor(iconSize));
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error('无法获取画布上下文');
+      return;
+    }
+
+    // 根据目标格式，透明背景或白色背景（JPEG 无透明）
+    if (iconFormat === 'jpeg') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, size, size);
+    } else {
+      // 保持透明背景（默认）
+      ctx.clearRect(0, 0, size, size);
+    }
+
+    // 把原图按比例缩放并居中到方形 canvas 中
+    const srcW = img.naturalWidth;
+    const srcH = img.naturalHeight;
+    if (srcW === 0 || srcH === 0) {
+      console.error('图片未加载完成');
+      return;
+    }
+
+    const ratio = Math.min(size / srcW, size / srcH);
+    const drawW = Math.round(srcW * ratio);
+    const drawH = Math.round(srcH * ratio);
+    const dx = Math.round((size - drawW) / 2);
+    const dy = Math.round((size - drawH) / 2);
+
+    ctx.drawImage(img, 0, 0, srcW, srcH, dx, dy, drawW, drawH);
+
+    // 输出 mime
+    const mime = iconFormat === 'png' ? 'image/png' : iconFormat === 'webp' ? 'image/webp' : 'image/jpeg';
+    const qualityVal = Math.min(1, Math.max(0.01, iconQuality / 100));
+
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          const ext = iconFormat === 'jpeg' ? 'jpg' : iconFormat;
+          saveAs(blob, `icon_${size}x${size}.${ext}`);
+        }
+      },
+      mime,
+      mime === 'image/png' ? undefined : qualityVal,
+    );
+  };
+
   // 处理按钮点击
   const handleProcessButtonClick = async () => {
     switch (processMode) {
@@ -287,6 +351,9 @@ const ImageProcessingTool = () => {
         break;
       case 'gridAndCompress':
         await downloadGridAndCompressImages();
+        break;
+      case 'icon':
+        await downloadIconImage();
         break;
     }
   };
@@ -344,6 +411,12 @@ const ImageProcessingTool = () => {
               onClick={() => setProcessMode('grid')}
             >
               九宫格切图
+            </button>
+            <button
+              className={`${styles.modeButton} ${processMode === 'icon' ? styles.activeMode : ''}`}
+              onClick={() => setProcessMode('icon')}
+            >
+              图标压缩
             </button>
             <button 
               className={`${styles.modeButton} ${processMode === 'compress' ? styles.activeMode : ''}`}
@@ -550,6 +623,49 @@ const ImageProcessingTool = () => {
                   </div>
                 </div>
               )}
+              {/* 图标设置 */}
+              {processMode === 'icon' && (
+                <div className={styles.compressionSettings}>
+                  <h3>图标输出设置</h3>
+                  <div className={styles.settingGroup}>
+                    <label htmlFor="icon-size">目标大小 (像素，正方形)</label>
+                    <input
+                      id="icon-size"
+                      type="number"
+                      min={1}
+                      max={2048}
+                      value={iconSize}
+                      onChange={(e) => setIconSize(Math.max(1, Number(e.target.value) || 1))}
+                      className={styles.numberInput}
+                    />
+                  </div>
+                  <div className={styles.settingGroup}>
+                    <label htmlFor="icon-format">格式</label>
+                    <select
+                      id="icon-format"
+                      value={iconFormat}
+                      onChange={(e) => setIconFormat(e.target.value as 'png' | 'jpeg' | 'webp')}
+                      className={styles.numberInput}
+                    >
+                      <option value="png">PNG（透明）</option>
+                      <option value="webp">WebP</option>
+                      <option value="jpeg">JPEG（无透明）</option>
+                    </select>
+                  </div>
+                  <div className={styles.settingGroup}>
+                    <label htmlFor="icon-quality">质量 ({iconQuality}%)</label>
+                    <input
+                      id="icon-quality"
+                      type="range"
+                      min={1}
+                      max={100}
+                      value={iconQuality}
+                      onChange={(e) => setIconQuality(Number(e.target.value))}
+                      className={styles.rangeInput}
+                    />
+                  </div>
+                </div>
+              )}
               
               <div className={styles.controls}>
                 <button
@@ -559,6 +675,7 @@ const ImageProcessingTool = () => {
                   {processMode === 'grid' && `下载 ${rows}x${cols} 切图`}
                   {processMode === 'compress' && '下载压缩图片'}
                   {processMode === 'gridAndCompress' && `下载 ${rows}x${cols} 切图并压缩`}
+                  {processMode === 'icon' && `下载 ${iconSize}x${iconSize} 图标 (${iconFormat.toUpperCase()})`}
                 </button>
               </div>
             </>
