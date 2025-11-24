@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import styles from './image.module.css';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -15,9 +15,18 @@ const ImageProcessingTool = () => {
   const [image, setImage] = useState<string | null>(null);
   const [processMode, setProcessMode] = useState<ProcessMode>(null);
   
-  // 九宫格相关状态
-  const [horizontalLines, setHorizontalLines] = useState<number[]>([33.33, 66.66]);
-  const [verticalLines, setVerticalLines] = useState<number[]>([33.33, 66.66]);
+  // 网格相关状态（支持自定义行列，不局限于九宫格）
+  const [rows, setRows] = useState<number>(3);
+  const [cols, setCols] = useState<number>(3);
+  const [horizontalLines, setHorizontalLines] = useState<number[]>(() => {
+    // rows 为 3 时应有 2 条线，位置为 33.33%/66.66%
+    const count = Math.max(0, 3 - 1);
+    return Array.from({ length: count }, (_, i) => ((i + 1) / 3) * 100);
+  });
+  const [verticalLines, setVerticalLines] = useState<number[]>(() => {
+    const count = Math.max(0, 3 - 1);
+    return Array.from({ length: count }, (_, i) => ((i + 1) / 3) * 100);
+  });
   const [isDragging, setIsDragging] = useState<{ index: number, type: 'horizontal' | 'vertical' } | null>(null);
   
   // 压缩相关状态
@@ -48,28 +57,32 @@ const ImageProcessingTool = () => {
     setIsDragging({ index, type });
   };
 
-  // 处理拖动
-  const handleMouseMove = (e: React.MouseEvent | MouseEvent) => {
+  // 处理拖动（useCallback 保持引用稳定，满足 Hook 依赖规则）
+  const handleMouseMove = useCallback((e: React.MouseEvent | MouseEvent) => {
     if (!isDragging || !containerRef.current) return;
-    
+
     const rect = containerRef.current.getBoundingClientRect();
-    
+
     if (isDragging.type === 'horizontal') {
       const newPosition = ((e.clientY - rect.top) / rect.height) * 100;
       if (newPosition > 0 && newPosition < 100) {
-        const newLines = [...horizontalLines];
-        newLines[isDragging.index] = newPosition;
-        setHorizontalLines(newLines);
+        setHorizontalLines((prev) => {
+          const newLines = [...prev];
+          newLines[isDragging.index] = newPosition;
+          return newLines;
+        });
       }
     } else {
       const newPosition = ((e.clientX - rect.left) / rect.width) * 100;
       if (newPosition > 0 && newPosition < 100) {
-        const newLines = [...verticalLines];
-        newLines[isDragging.index] = newPosition;
-        setVerticalLines(newLines);
+        setVerticalLines((prev) => {
+          const newLines = [...prev];
+          newLines[isDragging.index] = newPosition;
+          return newLines;
+        });
       }
     }
-  };
+  }, [isDragging]);
 
   // 处理拖动结束
   const handleMouseUp = () => {
@@ -125,7 +138,7 @@ const ImageProcessingTool = () => {
     }
   };
 
-  // 下载九宫格图片
+  // 下载网格切图图片（支持任意行列）
   const downloadGridImages = async () => {
     if (!image || !imageRef.current) return;
     
@@ -139,9 +152,9 @@ const ImageProcessingTool = () => {
     const zip = new JSZip();
     const promises: Promise<void>[] = [];
     
-    // 切割图片为9个部分并添加到ZIP
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    // 切割图片为 rows x cols 部分并添加到ZIP
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
         const x = vCuts[j];
         const y = hCuts[i];
         const width = vCuts[j + 1] - vCuts[j];
@@ -177,10 +190,10 @@ const ImageProcessingTool = () => {
     
     // 生成ZIP文件并下载
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    saveAs(zipBlob, 'nine_grid_images.zip');
+    saveAs(zipBlob, `grid_${rows}x${cols}.zip`);
   };
 
-  // 下载切割并压缩的图片
+  // 下载切割并压缩的图片（支持任意行列）
   const downloadGridAndCompressImages = async () => {
     if (!image || !imageRef.current) return;
     
@@ -194,9 +207,9 @@ const ImageProcessingTool = () => {
     const zip = new JSZip();
     const promises: Promise<void>[] = [];
     
-    // 切割图片为9个部分，压缩后添加到ZIP
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
+    // 切割图片为 rows x cols 部分，压缩后添加到ZIP
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
         const x = vCuts[j];
         const y = hCuts[i];
         const width = vCuts[j + 1] - vCuts[j];
@@ -227,7 +240,7 @@ const ImageProcessingTool = () => {
                 exactCanvas.height = maxHeight;
                 
                 const exactCtx = exactCanvas.getContext('2d');
-                if (exactCtx) {
+                  if (exactCtx) {
                   // 绘制到指定大小的画布上
                   exactCtx.drawImage(tempImg, 0, 0, maxWidth, maxHeight);
                   
@@ -260,7 +273,7 @@ const ImageProcessingTool = () => {
     
     // 生成ZIP文件并下载
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    saveAs(zipBlob, `nine_grid_${maxWidth}x${maxHeight}.zip`);
+    saveAs(zipBlob, `grid_${rows}x${cols}_${maxWidth}x${maxHeight}.zip`);
   };
 
   // 处理按钮点击
@@ -289,7 +302,28 @@ const ImageProcessingTool = () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove]);
+
+  // 当 rows 或 cols 变化时，智能调整切割线数量并保持已有位置（若可能）
+  useEffect(() => {
+    const adjustLines = (current: number[], targetCount: number) => {
+      if (current.length === targetCount) return current;
+      if (current.length > targetCount) return current.slice(0, targetCount);
+      // 增加时，保留已有值并在空位处均匀插入
+      const result = [...current];
+      const total = targetCount + 1; // 分割为 total 段
+      for (let i = result.length; i < targetCount; i += 1) {
+        // 默认插入平均位置
+        result.push(((i + 1) / total) * 100);
+      }
+      // 简单排序，保证线位置递增
+      result.sort((a, b) => a - b);
+      return result;
+    };
+
+    setHorizontalLines((cur) => adjustLines(cur, Math.max(0, rows - 1)));
+    setVerticalLines((cur) => adjustLines(cur, Math.max(0, cols - 1)));
+  }, [rows, cols]);
 
   return (
     <div className={styles.container}>
@@ -325,7 +359,7 @@ const ImageProcessingTool = () => {
             </button>
           </div>
           
-          <div className={styles.uploadContainer}>
+            <div className={styles.uploadContainer}>
             <input 
               type="file" 
               accept="image/*" 
@@ -337,6 +371,33 @@ const ImageProcessingTool = () => {
               选择图片
             </label>
           </div>
+            {/* 网格行列设置 */}
+            <div style={{ marginTop: 12 }}>
+              <div className={styles.settingGroup}>
+                <label htmlFor="rows">行数</label>
+                <input
+                  id="rows"
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={rows}
+                  onChange={(e) => setRows(Math.max(1, Number(e.target.value) || 1))}
+                  className={styles.numberInput}
+                />
+              </div>
+              <div className={styles.settingGroup}>
+                <label htmlFor="cols">列数</label>
+                <input
+                  id="cols"
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={cols}
+                  onChange={(e) => setCols(Math.max(1, Number(e.target.value) || 1))}
+                  className={styles.numberInput}
+                />
+              </div>
+            </div>
         </div>
         
         {/* 中间图片预览区域 */}
@@ -348,14 +409,15 @@ const ImageProcessingTool = () => {
               onMouseMove={isDragging ? handleMouseMove : undefined}
               onMouseUp={isDragging ? handleMouseUp : undefined}
             >
-              <img 
-                src={image} 
-                alt="待处理图片" 
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image}
+                alt="待处理图片"
                 className={styles.image}
                 ref={imageRef}
               />
-              
-              {/* 仅在九宫格模式下显示切割线 */}
+
+              {/* 仅在网格模式下显示切割线（支持自定义行列） */}
               {(processMode === 'grid' || processMode === 'gridAndCompress') && (
                 <>
                   {/* 水平切割线 */}
@@ -378,20 +440,20 @@ const ImageProcessingTool = () => {
                     />
                   ))}
                   
-                  {/* 显示九宫格编号 */}
+                  {/* 显示每个网格编号（可自适应 rows x cols） */}
                   <div className={styles.gridNumbers}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num, index) => {
-                      const row = Math.floor(index / 3);
-                      const col = index % 3;
-                      
+                    {Array.from({ length: rows * cols }).map((_, index) => {
+                      const row = Math.floor(index / cols);
+                      const col = index % cols;
+
                       const top = row === 0 ? 0 : horizontalLines[row - 1];
                       const left = col === 0 ? 0 : verticalLines[col - 1];
-                      const bottom = row === 2 ? 100 : horizontalLines[row];
-                      const right = col === 2 ? 100 : verticalLines[col];
-                      
+                      const bottom = row === rows - 1 ? 100 : horizontalLines[row];
+                      const right = col === cols - 1 ? 100 : verticalLines[col];
+
                       return (
-                        <div 
-                          key={num}
+                        <div
+                          key={`cell-${row}-${col}`}
                           className={styles.gridNumber}
                           style={{
                             top: `${top}%`,
@@ -400,7 +462,7 @@ const ImageProcessingTool = () => {
                             height: `${bottom - top}%`
                           }}
                         >
-                          {num}
+                          {index + 1}
                         </div>
                       );
                     })}
@@ -490,13 +552,13 @@ const ImageProcessingTool = () => {
               )}
               
               <div className={styles.controls}>
-                <button 
+                <button
                   className={styles.processButton}
                   onClick={handleProcessButtonClick}
                 >
-                  {processMode === 'grid' && '下载九宫格图片'}
+                  {processMode === 'grid' && `下载 ${rows}x${cols} 切图`}
                   {processMode === 'compress' && '下载压缩图片'}
-                  {processMode === 'gridAndCompress' && '下载切图并压缩'}
+                  {processMode === 'gridAndCompress' && `下载 ${rows}x${cols} 切图并压缩`}
                 </button>
               </div>
             </>
