@@ -19,10 +19,10 @@
     "jszip": "^3.10.1",
     "mongodb": "^6.14.2",
     "mongoose": "^8.12.1",
-    "next": "15.2.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-syntax-highlighter": "^15.6.1"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-syntax-highlighter": "latest"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
